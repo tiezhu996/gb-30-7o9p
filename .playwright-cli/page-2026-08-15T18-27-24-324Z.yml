@@ -1,0 +1,112 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5] [cursor=pointer]: 🐾 宠物领养平台
+    - menu [ref=e6]:
+      - menuitem "首页" [ref=e7] [cursor=pointer]
+      - menuitem "待领养动物" [ref=e8] [cursor=pointer]
+      - menuitem "救助机构" [ref=e9] [cursor=pointer]
+      - menuitem "救助社区" [ref=e10] [cursor=pointer]
+      - menuitem "公益捐赠" [ref=e11] [cursor=pointer]
+      - menuitem "领养回访" [ref=e12] [cursor=pointer]
+      - menuitem "我的申请" [ref=e13] [cursor=pointer]
+      - menuitem [disabled]
+    - button "登录/注册" [ref=e14] [cursor=pointer]
+  - main [ref=e16]:
+    - generic [ref=e17]:
+      - heading "待领养动物" [level=1] [ref=e18]
+      - generic [ref=e19]:
+        - generic [ref=e20]:
+          - generic [ref=e24] [cursor=pointer]:
+            - combobox [ref=e26]
+            - generic: 动物种类
+          - generic [ref=e28]:
+            - generic [ref=e29] [cursor=pointer]:
+              - generic [ref=e30]:
+                - radio "全部" [checked]
+              - text: 全部
+            - generic [ref=e31] [cursor=pointer]:
+              - generic [ref=e32]:
+                - radio "可领养"
+              - text: 可领养
+            - generic [ref=e33] [cursor=pointer]:
+              - generic [ref=e34]:
+                - radio "已领养"
+              - text: 已领养
+        - generic [ref=e41]:
+          - searchbox "输入关键词搜索" [ref=e43]
+          - button [ref=e46] [cursor=pointer]:
+            - img "search" [ref=e48]
+        - button "重 置" [ref=e56] [cursor=pointer]
+      - generic [ref=e58]:
+        - generic [ref=e60] [cursor=pointer]:
+          - img "冒烟小狗" [ref=e62]
+          - generic [ref=e65]:
+            - generic [ref=e67]:
+              - text: 冒烟小狗
+              - generic [ref=e68]: 犬
+              - generic [ref=e69]: 可领养
+            - generic [ref=e70]: 泰迪 · 1岁 · 上海
+        - generic [ref=e72] [cursor=pointer]:
+          - img "冒烟小狗" [ref=e74]
+          - generic [ref=e77]:
+            - generic [ref=e79]:
+              - text: 冒烟小狗
+              - generic [ref=e80]: 犬
+              - generic [ref=e81]: 申请中
+            - generic [ref=e82]: 泰迪 · 1岁 · 上海
+        - generic [ref=e84] [cursor=pointer]:
+          - img "冒烟小狗" [ref=e86]
+          - generic [ref=e89]:
+            - generic [ref=e91]:
+              - text: 冒烟小狗
+              - generic [ref=e92]: 犬
+              - generic [ref=e93]: 申请中
+            - generic [ref=e94]: 泰迪 · 1岁 · 上海
+        - generic [ref=e96] [cursor=pointer]:
+          - img "冒烟小狗" [ref=e98]
+          - generic [ref=e101]:
+            - generic [ref=e103]:
+              - text: 冒烟小狗
+              - generic [ref=e104]: 犬
+              - generic [ref=e105]: 可领养
+            - generic [ref=e106]: 泰迪 · 1岁 · 上海
+        - generic [ref=e108] [cursor=pointer]:
+          - img "冒烟小狗" [ref=e110]
+          - generic [ref=e113]:
+            - generic [ref=e115]:
+              - text: 冒烟小狗
+              - generic [ref=e116]: 犬
+              - generic [ref=e117]: 申请中
+            - generic [ref=e118]: 泰迪 · 1岁 · 上海
+        - generic [ref=e120] [cursor=pointer]:
+          - img "豆豆" [ref=e122]
+          - generic [ref=e125]:
+            - generic [ref=e127]:
+              - text: 豆豆
+              - generic [ref=e128]: 犬
+              - generic [ref=e129]: 申请中
+            - generic [ref=e130]: 柯基 · 3岁 · 北京
+        - generic [ref=e132] [cursor=pointer]:
+          - img "跳跳" [ref=e134]
+          - generic [ref=e137]:
+            - generic [ref=e139]:
+              - text: 跳跳
+              - generic [ref=e140]: 兔
+              - generic [ref=e141]: 可领养
+            - generic [ref=e142]: 垂耳兔 · 1岁 · 北京
+        - generic [ref=e144] [cursor=pointer]:
+          - img "雪球" [ref=e146]
+          - generic [ref=e149]:
+            - generic [ref=e151]:
+              - text: 雪球
+              - generic [ref=e152]: 猫
+              - generic [ref=e153]: 可领养
+            - generic [ref=e154]: 英短 · 1岁 · 上海
+        - generic [ref=e156] [cursor=pointer]:
+          - img "旺财" [ref=e158]
+          - generic [ref=e161]:
+            - generic [ref=e163]:
+              - text: 旺财
+              - generic [ref=e164]: 犬
+              - generic [ref=e165]: 可领养
+            - generic [ref=e166]: 中华田园犬 · 2岁 · 上海

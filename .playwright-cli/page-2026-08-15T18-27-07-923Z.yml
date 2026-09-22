@@ -1,0 +1,108 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5] [cursor=pointer]: 🐾 宠物领养平台
+      - menu [ref=e6]:
+        - menuitem "首页" [ref=e7] [cursor=pointer]
+        - menuitem "待领养动物" [ref=e8] [cursor=pointer]
+        - menuitem "救助机构" [ref=e9] [cursor=pointer]
+        - menuitem "救助社区" [ref=e10] [cursor=pointer]
+        - menuitem "公益捐赠" [ref=e11] [cursor=pointer]
+        - menuitem "领养回访" [ref=e12] [cursor=pointer]
+        - menuitem "我的申请" [ref=e13] [cursor=pointer]
+        - menuitem [disabled]
+      - generic [ref=e52] [cursor=pointer]:
+        - img "user" [ref=e54]
+        - text: 暖窝救助站
+    - main [ref=e16]:
+      - generic [ref=e57]:
+        - generic [ref=e58]:
+          - heading "让每个流浪生命找到新家" [level=1] [ref=e59]
+          - generic [ref=e61]:
+            - searchbox "搜索待领养动物" [ref=e62]
+            - button [ref=e64] [cursor=pointer]:
+              - img "search" [ref=e66]
+        - heading "🐕 热门待领养动物" [level=3] [ref=e69]
+        - generic [ref=e70]:
+          - generic [ref=e72] [cursor=pointer]:
+            - img "冒烟小狗" [ref=e74]
+            - generic [ref=e77]:
+              - generic [ref=e79]:
+                - text: 冒烟小狗
+                - generic [ref=e80]: 犬
+                - generic [ref=e81]: 可领养
+              - generic [ref=e82]: 泰迪 · 1岁 · 上海
+          - generic [ref=e84] [cursor=pointer]:
+            - img "冒烟小狗" [ref=e86]
+            - generic [ref=e89]:
+              - generic [ref=e91]:
+                - text: 冒烟小狗
+                - generic [ref=e92]: 犬
+                - generic [ref=e93]: 可领养
+              - generic [ref=e94]: 泰迪 · 1岁 · 上海
+          - generic [ref=e96] [cursor=pointer]:
+            - img "跳跳" [ref=e98]
+            - generic [ref=e101]:
+              - generic [ref=e103]:
+                - text: 跳跳
+                - generic [ref=e104]: 兔
+                - generic [ref=e105]: 可领养
+              - generic [ref=e106]: 垂耳兔 · 1岁 · 北京
+          - generic [ref=e108] [cursor=pointer]:
+            - img "雪球" [ref=e110]
+            - generic [ref=e113]:
+              - generic [ref=e115]:
+                - text: 雪球
+                - generic [ref=e116]: 猫
+                - generic [ref=e117]: 可领养
+              - generic [ref=e118]: 英短 · 1岁 · 上海
+          - generic [ref=e120] [cursor=pointer]:
+            - img "旺财" [ref=e122]
+            - generic [ref=e125]:
+              - generic [ref=e127]:
+                - text: 旺财
+                - generic [ref=e128]: 犬
+                - generic [ref=e129]: 可领养
+              - generic [ref=e130]: 中华田园犬 · 2岁 · 上海
+        - heading "📖 最新救助故事" [level=3] [ref=e131]
+        - generic [ref=e132]:
+          - generic [ref=e135] [cursor=pointer]:
+            - generic [ref=e136]: 救助故事
+            - heading "冒烟救助故事" [level=3] [ref=e137]
+            - paragraph [ref=e138]: 冒烟内容
+            - generic [ref=e139]: 2026-08-16 02:25 · 👍 1 · 💬 1
+          - generic [ref=e142] [cursor=pointer]:
+            - generic [ref=e143]: 救助故事
+            - heading "冒烟救助故事" [level=3] [ref=e144]
+            - paragraph [ref=e145]: 冒烟内容
+            - generic [ref=e146]: 2026-08-16 02:25 · 👍 1 · 💬 1
+          - generic [ref=e149] [cursor=pointer]:
+            - generic [ref=e150]: 救助故事
+            - heading "冒烟救助故事" [level=3] [ref=e151]
+            - paragraph [ref=e152]: 冒烟内容
+            - generic [ref=e153]: 2026-08-16 02:23 · 👍 1 · 💬 1
+          - generic [ref=e156] [cursor=pointer]:
+            - generic [ref=e157]: 救助故事
+            - heading "冒烟救助故事" [level=3] [ref=e158]
+            - paragraph [ref=e159]: 冒烟内容
+            - generic [ref=e160]: 2026-08-16 02:22 · 👍 1 · 💬 0
+          - generic [ref=e163] [cursor=pointer]:
+            - generic [ref=e164]: 寻主公告
+            - heading "寻主公告：走失的橘猫" [level=3] [ref=e165]
+            - paragraph [ref=e166]: 昨天在小区附近捡到一只橘猫，脖子上有红色项圈，请失主联系。
+            - generic [ref=e167]: 2026-08-16 02:21 · 👍 12 · 💬 3
+        - heading "🏠 推荐机构" [level=3] [ref=e168]
+        - generic [ref=e169]:
+          - generic [ref=e174] [cursor=pointer]:
+            - generic [ref=e176]:
+              - text: 城市伴侣宠物收容所
+              - generic [ref=e177]: 已认证
+            - generic [ref=e178]: 北京 · 13900000000
+          - generic [ref=e183] [cursor=pointer]:
+            - generic [ref=e185]:
+              - text: 暖窝动物救助站
+              - generic [ref=e186]: 已认证
+            - generic [ref=e187]: 上海 · 13800000000
+  - generic [ref=e189]:
+    - img "check-circle" [ref=e190]
+    - generic [ref=e193]: 登录成功
