@@ -11,6 +11,7 @@ import (
 var (
 	ErrNotFound  = errors.New("record not found")
 	ErrDuplicate = errors.New("duplicate record")
+	ErrConflict  = errors.New("record changed concurrently")
 )
 
 func isDuplicate(err error) bool {

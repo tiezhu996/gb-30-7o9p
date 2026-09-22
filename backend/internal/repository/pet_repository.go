@@ -2,6 +2,7 @@ package repository
 
 import (
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/gbadopt/gbadopt/internal/constants"
 	"github.com/gbadopt/gbadopt/internal/model"
@@ -25,11 +26,38 @@ func (r *PetRepository) FindByID(id uint) (*model.Pet, error) {
 	return &p, nil
 }
 
+// FindByIDForUpdateTx locks a pet row for the duration of tx.
+func (r *PetRepository) FindByIDForUpdateTx(tx *gorm.DB, id uint) (*model.Pet, error) {
+	var p model.Pet
+	if err := translate(tx.Clauses(clause.Locking{Strength: "UPDATE"}).First(&p, id).Error); err != nil {
+		return nil, err
+	}
+	return &p, nil
+}
+
+// UpdateAdoptionStateTx writes only adoption quota columns within an outer transaction.
+func (r *PetRepository) UpdateAdoptionStateTx(tx *gorm.DB, id uint, status string, reservedUserID uint) error {
+	return translate(tx.Model(&model.Pet{}).Where("id = ?", id).
+		Updates(map[string]any{"status": status, "reserved_user_id": reservedUserID}).Error)
+}
+
 // Update persists a pet.
 func (r *PetRepository) Update(p *model.Pet) error { return translate(r.db.Save(p).Error) }
 
 // UpdateTx persists a pet within an outer transaction.
 func (r *PetRepository) UpdateTx(tx *gorm.DB, p *model.Pet) error { return translate(tx.Save(p).Error) }
+
+// ListByIDs returns pets by ids.
+func (r *PetRepository) ListByIDs(ids []uint) ([]model.Pet, error) {
+	var items []model.Pet
+	if len(ids) == 0 {
+		return items, nil
+	}
+	if err := r.db.Where("id IN ?", ids).Find(&items).Error; err != nil {
+		return nil, err
+	}
+	return items, nil
+}
 
 // Delete removes a pet by id.
 func (r *PetRepository) Delete(id uint) error {

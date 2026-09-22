@@ -13,10 +13,10 @@ import (
 
 // PetService handles pet publishing and management.
 type PetService struct {
-	repo         *repository.PetRepository
-	orgRepo      *repository.OrganizationRepository
-	redis        *util.RedisClient
-	logger       *slog.Logger
+	repo    *repository.PetRepository
+	orgRepo *repository.OrganizationRepository
+	redis   *util.RedisClient
+	logger  *slog.Logger
 }
 
 // NewPetService creates a PetService.
@@ -81,6 +81,14 @@ func (s *PetService) UpdateStatus(userID uint, petID uint, status string) (*mode
 	}
 	if err := s.canManage(userID, p.OrgID); err != nil {
 		return nil, err
+	}
+	if status == constants.PetStatusReserved {
+		return nil, util.NewAppError(409, constants.CodeConflict,
+			fmt.Sprintf("Pet[id=%d] status change failed: reservations must be made through an application", petID))
+	}
+	if p.Status == constants.PetStatusReserved || p.Status == constants.PetStatusAdopted {
+		return nil, util.NewAppError(409, constants.CodeConflict,
+			fmt.Sprintf("Pet[id=%d] status change failed: release or finalize the current adoption through an application", petID))
 	}
 	p.Status = status
 	if err := s.repo.Update(p); err != nil {

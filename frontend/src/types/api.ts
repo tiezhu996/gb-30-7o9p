@@ -29,6 +29,10 @@ export interface AdoptionApplication {
   org_id: number
   questionnaire: string
   status: string
+  end_reason: string
+  waitlist_position: number
+  reserved_user_id: number
+  reserved_user_name: string
   created_at: string
   updated_at: string
 }

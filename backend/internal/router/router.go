@@ -31,7 +31,7 @@ func Setup(cfg *config.Config, db *gorm.DB, redis *util.RedisClient, minio *util
 	userService := service.NewUserService(userRepo, logger, cfg)
 	orgService := service.NewOrganizationService(orgRepo, logger)
 	petService := service.NewPetService(petRepo, orgRepo, redis, logger)
-	appService := service.NewApplicationService(db, appRepo, petRepo, orgRepo, logger)
+	appService := service.NewApplicationService(db, appRepo, petRepo, orgRepo, userRepo, logger)
 	reviewService := service.NewReviewService(reviewRepo, appRepo, orgRepo, logger)
 	postService := service.NewPostService(postRepo, orgRepo, logger)
 	commentService := service.NewCommentService(db, commentRepo, postRepo, logger)

@@ -1,5 +1,5 @@
 export type PetSpecies = 'dog' | 'cat' | 'rabbit' | 'other'
-export type PetStatus = 'available' | 'pending' | 'adopted'
+export type PetStatus = 'available' | 'pending' | 'reserved' | 'adopted'
 
 export const PetSpeciesMap: Record<PetSpecies, string> = {
   dog: '犬',
@@ -11,6 +11,7 @@ export const PetSpeciesMap: Record<PetSpecies, string> = {
 export const PetStatusMap: Record<PetStatus, { text: string; color: string }> = {
   available: { text: '可领养', color: 'green' },
   pending: { text: '申请中', color: 'gold' },
+  reserved: { text: '预留中', color: 'orange' },
   adopted: { text: '已领养', color: 'default' },
 }
 
@@ -31,6 +32,7 @@ export interface Pet {
   vaccinated: boolean
   image_urls: string
   status: PetStatus
+  reserved_user_id: number
   created_at: string
 }
 

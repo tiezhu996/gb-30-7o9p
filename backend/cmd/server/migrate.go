@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"log/slog"
 	"time"
 
@@ -12,7 +13,7 @@ import (
 )
 
 func migrate(db *gorm.DB) error {
-	return db.AutoMigrate(
+	if err := db.AutoMigrate(
 		&model.User{},
 		&model.Organization{},
 		&model.Pet{},
@@ -23,7 +24,65 @@ func migrate(db *gorm.DB) error {
 		&model.Donation{},
 		&model.DonationUsage{},
 		&model.Favorite{},
-	)
+	); err != nil {
+		return err
+	}
+	return addAdoptionIndexes(db)
+}
+
+// addAdoptionIndexes backfills constraints on databases created before the
+// reservation/waitlist feature. It is idempotent: both checks are cheap and
+// CREATE INDEX CONCAT/IF NOT EXISTS would otherwise vary by driver.
+func addAdoptionIndexes(db *gorm.DB) error {
+	migrator := db.Migrator()
+
+	// One application per user per pet: this makes duplicate or concurrent
+	// submissions fail at the database instead of overwriting each other.
+	app := &model.AdoptionApplication{}
+	if !migrator.HasIndex(app, "uniq_application_user_pet") {
+		if err := db.Exec(
+			"CREATE UNIQUE INDEX IF NOT EXISTS uniq_application_user_pet ON adoption_applications (user_id, pet_id)",
+		).Error; err != nil {
+			return err
+		}
+	}
+
+	// Backfill reservation ownership for old pending rows: when only one
+	// active application exists it becomes the reservation holder.
+	if migrator.HasColumn(&model.Pet{}, "reserved_user_id") {
+		if err := backfillLegacyReservations(db); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func backfillLegacyReservations(db *gorm.DB) error {
+	type pendingPet struct {
+		PetID  uint
+		UserID uint
+	}
+	var rows []pendingPet
+	err := db.Raw(`
+		SELECT pet_id, MIN(user_id) AS user_id
+		FROM adoption_applications
+		WHERE status IN ('submitted','org_review','communicating','confirmed','offline_interview')
+		  AND pet_id IN (SELECT id FROM pets WHERE status = 'pending' AND reserved_user_id IS NULL)
+		GROUP BY pet_id
+		HAVING COUNT(*) = 1
+	`).Scan(&rows).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
+	for _, row := range rows {
+		if err := db.Exec(
+			"UPDATE pets SET status = 'reserved', reserved_user_id = ? WHERE id = ? AND status = 'pending'",
+			row.UserID, row.PetID,
+		).Error; err != nil {
+			slog.Warn("legacy reservation backfill failed", "pet_id", row.PetID, "error", err)
+		}
+	}
+	return nil
 }
 
 func seed(db *gorm.DB) error {
@@ -70,7 +129,7 @@ func seed(db *gorm.DB) error {
 	}
 
 	pets := []model.Pet{
-		{OrgID: org.ID, Name: "旺财", Species: "dog", Breed: "中华田园犬", Age: 2, Gender: "male", Size: "medium", City: "上海", Description: "性格温顺忠诚，已绝育疫苗齐全。", Personality: "亲人活泼", HealthStatus: "健康", Neutered: true, Vaccinated: true, ImageURLs: `["https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600"]`, Status: "available"},
+		{OrgID: org.ID, Name: "旺财", Species: "dog", Breed: "中华田园犬", Age: 2, Gender: "male", Size: "medium", City: "上海", Description: "性格温顺忠诚，已绝育疫苗齐全。", Personality: "亲人活泼", HealthStatus: "健康", Neutered: true, Vaccinated: true, ImageURLs: `["https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600"]`, Status: "reserved", ReservedUserID: user.ID},
 		{OrgID: org.ID, Name: "雪球", Species: "cat", Breed: "英短", Age: 1, Gender: "female", Size: "small", City: "上海", Description: "安静粘人的小猫咪，已驱虫。", Personality: "温顺", HealthStatus: "健康", Neutered: true, Vaccinated: true, ImageURLs: `["https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600"]`, Status: "available"},
 		{OrgID: org2.ID, Name: "跳跳", Species: "rabbit", Breed: "垂耳兔", Age: 1, Gender: "male", Size: "small", City: "北京", Description: "活泼好动的垂耳兔，喜欢胡萝卜。", Personality: "活泼", HealthStatus: "健康", Neutered: false, Vaccinated: false, ImageURLs: `["https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600"]`, Status: "available"},
 		{OrgID: org2.ID, Name: "豆豆", Species: "dog", Breed: "柯基", Age: 3, Gender: "male", Size: "small", City: "北京", Description: "短腿萌宠，粘人爱撒娇。", Personality: "粘人", HealthStatus: "健康", Neutered: true, Vaccinated: true, ImageURLs: `["https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600"]`, Status: "available"},
@@ -111,7 +170,7 @@ func seed(db *gorm.DB) error {
 	}
 
 	apps := []model.AdoptionApplication{
-		{UserID: user.ID, PetID: pets[0].ID, OrgID: org.ID, Questionnaire: `{"has_yard":false,"pet_experience":"有养狗经验"}`, Status: "submitted"},
+		{UserID: user.ID, PetID: pets[0].ID, OrgID: org.ID, Questionnaire: `{"has_yard":false,"pet_experience":"有养狗经验"}`, Status: "reserved"},
 	}
 	if err := db.Create(&apps).Error; err != nil {
 		return err

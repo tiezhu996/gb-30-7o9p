@@ -13,6 +13,6 @@ export function listOrgApplications(status?: string) {
   return request.get<never, AdoptionApplication[]>('/applications/org', { params: { status } })
 }
 
-export function updateApplicationStatus(id: number, status: string) {
-  return request.put<never, AdoptionApplication>(`/applications/${id}/status`, { status })
+export function updateApplicationStatus(id: number, status: string, reason?: string) {
+  return request.put<never, AdoptionApplication>(`/applications/${id}/status`, { status, reason })
 }

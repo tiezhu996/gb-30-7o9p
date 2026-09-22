@@ -63,7 +63,7 @@ export default function PetDetail() {
               <Button
                 type="primary"
                 block
-                disabled={pet.status !== 'available'}
+                disabled={pet.status === 'reserved' || pet.status === 'adopted'}
                 onClick={() => {
                   if (!isLoggedIn) {
                     message.warning('请先登录')
@@ -73,7 +73,13 @@ export default function PetDetail() {
                   navigate(`/apply/${pet.id}`)
                 }}
               >
-                {pet.status === 'available' ? '发起领养申请' : '暂不可申请'}
+                {pet.status === 'available'
+                  ? '发起领养申请'
+                  : pet.status === 'pending'
+                    ? '申请领养（按提交时间排队）'
+                    : pet.status === 'reserved'
+                      ? '宠物已预留，暂不接受新申请'
+                      : '宠物已被领养'}
               </Button>
             </Space>
           </Card>

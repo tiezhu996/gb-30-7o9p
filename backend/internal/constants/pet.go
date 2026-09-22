@@ -27,12 +27,13 @@ func IsValidPetSpecies(s string) bool {
 const (
 	PetStatusAvailable = "available"
 	PetStatusPending   = "pending"
+	PetStatusReserved  = "reserved"
 	PetStatusAdopted   = "adopted"
 )
 
 // ValidPetStatuses returns all accepted pet statuses.
 func ValidPetStatuses() []string {
-	return []string{PetStatusAvailable, PetStatusPending, PetStatusAdopted}
+	return []string{PetStatusAvailable, PetStatusPending, PetStatusReserved, PetStatusAdopted}
 }
 
 // IsValidPetStatus reports whether the status is known.

@@ -9,4 +9,5 @@ type ApplicationSubmitRequest struct {
 // ApplicationStatusRequest changes application status.
 type ApplicationStatusRequest struct {
 	Status string `json:"status" binding:"required"`
+	Reason string `json:"reason"`
 }

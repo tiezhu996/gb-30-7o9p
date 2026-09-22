@@ -73,7 +73,7 @@ func (h *ApplicationHandler) UpdateStatus(c *gin.Context) {
 		c.Error(util.NewAppError(http.StatusBadRequest, constants.CodeBadRequest, constants.MsgInvalidParam))
 		return
 	}
-	a, err := h.svc.UpdateStatus(middleware.GetUserID(c), uint(id), middleware.GetUserRole(c), req.Status)
+	a, err := h.svc.UpdateStatus(middleware.GetUserID(c), uint(id), middleware.GetUserRole(c), req.Status, req.Reason)
 	if err != nil {
 		c.Error(err)
 		return

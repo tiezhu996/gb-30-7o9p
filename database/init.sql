@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS pets (
   vaccinated BOOLEAN DEFAULT FALSE,
   image_urls JSONB DEFAULT '[]',
   status VARCHAR(16) NOT NULL DEFAULT 'available',
+  reserved_user_id BIGINT DEFAULT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   CONSTRAINT fk_pet_org FOREIGN KEY (org_id) REFERENCES organizations(id)
 );
@@ -57,10 +58,12 @@ CREATE TABLE IF NOT EXISTS adoption_applications (
   org_id BIGINT NOT NULL,
   questionnaire JSONB DEFAULT '{}',
   status VARCHAR(32) NOT NULL DEFAULT 'submitted',
+  end_reason VARCHAR(64) DEFAULT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   CONSTRAINT fk_app_user FOREIGN KEY (user_id) REFERENCES users(id),
-  CONSTRAINT fk_app_pet FOREIGN KEY (pet_id) REFERENCES pets(id)
+  CONSTRAINT fk_app_pet FOREIGN KEY (pet_id) REFERENCES pets(id),
+  CONSTRAINT uniq_app_user_pet UNIQUE (user_id, pet_id)
 );
 
 CREATE TABLE IF NOT EXISTS visit_reviews (
@@ -143,8 +146,8 @@ INSERT INTO organizations (user_id, name, cert_type, status, contact, city, desc
   (3, '暖窝动物救助站', 'registered', 'approved', '13800000000', '上海', '致力于流浪猫狗救助与领养的专业机构。'),
   (3, '城市伴侣宠物收容所', 'registered', 'approved', '13900000000', '北京', '提供宠物收容、医疗与领养服务。');
 
-INSERT INTO pets (org_id, name, species, breed, age, gender, size, city, description, personality, health_status, neutered, vaccinated, image_urls, status) VALUES
-  (1, '旺财', 'dog', '中华田园犬', 2, 'male', 'medium', '上海', '性格温顺忠诚，已绝育疫苗齐全。', '亲人活泼', '健康', TRUE, TRUE, '["https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600"]', 'available'),
+INSERT INTO pets (org_id, name, species, breed, age, gender, size, city, description, personality, health_status, neutered, vaccinated, image_urls, status, reserved_user_id) VALUES
+  (1, '旺财', 'dog', '中华田园犬', 2, 'male', 'medium', '上海', '性格温顺忠诚，已绝育疫苗齐全。', '亲人活泼', '健康', TRUE, TRUE, '["https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600"]', 'reserved', 2),
   (1, '雪球', 'cat', '英短', 1, 'female', 'small', '上海', '安静粘人的小猫咪，已驱虫。', '温顺', '健康', TRUE, TRUE, '["https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600"]', 'available'),
   (2, '跳跳', 'rabbit', '垂耳兔', 1, 'male', 'small', '北京', '活泼好动的垂耳兔，喜欢胡萝卜。', '活泼', '健康', FALSE, FALSE, '["https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=600"]', 'available'),
   (2, '豆豆', 'dog', '柯基', 3, 'male', 'small', '北京', '短腿萌宠，粘人爱撒娇。', '粘人', '健康', TRUE, TRUE, '["https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=600"]', 'available');
@@ -165,7 +168,7 @@ INSERT INTO donation_usages (org_id, donation_id, amount, usage_desc) VALUES
   (1, 1, 100.00, '采购猫粮与驱虫药');
 
 INSERT INTO adoption_applications (user_id, pet_id, org_id, questionnaire, status) VALUES
-  (2, 1, 1, '{"has_yard":false,"pet_experience":"有养狗经验"}', 'submitted');
+  (2, 1, 1, '{"has_yard":false,"pet_experience":"有养狗经验"}', 'reserved');
 
 INSERT INTO visit_reviews (application_id, user_id, org_id, scheduled_days, due_date, status) VALUES
   (1, 2, 1, 30, CURRENT_DATE + 30, 'pending');

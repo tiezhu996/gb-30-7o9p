@@ -130,10 +130,10 @@ gb-30/
 | GET | /api/v1/pets/:id | 公开 | 宠物详情 |
 | POST | /api/v1/pets | org（限流） | 发布宠物 |
 | PUT | /api/v1/pets/:id/status | org | 宠物状态变更 |
-| POST | /api/v1/applications | 登录（限流） | 提交领养申请（事务：创建申请+宠物置为待领养） |
-| GET | /api/v1/applications/me | 登录 | 我的申请列表 |
-| GET | /api/v1/applications/org | org | 机构收到的申请 |
-| PUT | /api/v1/applications/:id/status | 登录 | 申请状态流转（approved 时事务更新宠物为已领养） |
+| POST | /api/v1/applications | 登录（限流） | 提交领养申请（宠物 available/pending 开放期均可；同用户同宠物唯一索引） |
+| GET | /api/v1/applications/me | 登录 | 我的申请列表（含预留人、候补名次、结束原因） |
+| GET | /api/v1/applications/org | org | 机构收到的申请（含预留人、候补名次、结束原因） |
+| PUT | /api/v1/applications/:id/status | 登录 | 申请状态流转：reserved 选中预留（其余申请自动候补）、withdrawn/cancelled 释放名额并自动递补首位候补、approved 最终领养 |
 | GET | /api/v1/reviews/me | 登录 | 我的回访记录 |
 | GET | /api/v1/reviews/org | org | 机构回访记录 |
 | POST | /api/v1/reviews | org（限流） | 创建回访计划 |
@@ -156,20 +156,20 @@ gb-30/
 
 ## 枚举出现位置清单
 
-### ApplicationStatus（submitted/org_review/communicating/confirmed/offline_interview/approved/rejected）
+### ApplicationStatus（submitted/org_review/communicating/confirmed/offline_interview/reserved/waitlisted/approved/rejected/withdrawn/cancelled/closed）
 
-- 后端：`internal/constants/application.go`（定义+状态机）、`internal/model/adoption_application.go`（模型）、`internal/service/application_service.go`（流转校验）、`internal/util/formatters.go`（AppStatusText）、`internal/constants/log_templates.go`、`database/init.sql`
-- 前端：`src/constants/application.ts`（定义）、`src/components/common/ApplicationStatusBadge.tsx`、`src/pages/Applications.tsx`（进度列表/筛选）、`src/hooks/useAdoptionStats.ts`
+- 后端：`internal/constants/application.go`（定义+状态机）、`internal/model/adoption_application.go`（含 end_reason、派生 waitlist_position/reserved_user_id）、`internal/service/application_service.go`（预留/候补/递补流转校验，宠物行 FOR UPDATE 行锁+期望状态 CAS）、`internal/util/formatters.go`（AppStatusText）、`internal/constants/log_templates.go`、`database/init.sql`（(user_id,pet_id) 唯一索引）
+- 前端：`src/constants/application.ts`（状态与结束原因定义）、`src/components/common/ApplicationStatusBadge.tsx`、`src/pages/Applications.tsx`（预留人/名次/结束原因与操作按钮、筛选）、`src/hooks/useAdoptionStats.ts`
 
 ### PetSpecies（dog/cat/rabbit/other）
 
 - 后端：`internal/constants/pet.go`（定义）、`internal/model/pet.go`（模型）、`internal/service/pet_service.go`（校验）、`internal/util/formatters.go`（PetSpeciesText）、`internal/constants/log_templates.go`、`database/init.sql`
 - 前端：`src/constants/pet.ts`（定义）、`src/components/common/PetCard.tsx`、`src/pages/PetList.tsx`（筛选器）、`src/pages/PetDetail.tsx`
 
-### PetStatus（available/pending/adopted）
+### PetStatus（available/pending/reserved/adopted）
 
-- 后端：`internal/constants/pet.go`（定义）、`internal/model/pet.go`、`internal/service/pet_service.go`、`internal/service/application_service.go`（提交后置 pending/通过后置 adopted）、`internal/util/formatters.go`、`database/init.sql`
-- 前端：`src/constants/pet.ts`、`src/components/common/PetCard.tsx`、`src/pages/PetList.tsx`、`src/pages/PetDetail.tsx`
+- 后端：`internal/constants/pet.go`（定义）、`internal/model/pet.go`（reserved_user_id）、`internal/service/pet_service.go`（校验，reserved 只能由申请流转产生）、`internal/service/application_service.go`（选中预留 reserved/通过后 adopted、释放无候补回 available）、`internal/util/formatters.go`、`database/init.sql`
+- 前端：`src/constants/pet.ts`、`src/components/common/PetCard.tsx`、`src/pages/PetList.tsx`、`src/pages/PetDetail.tsx`（开放期可继续申请）
 
 ### OrganizationStatus（pending/approved/rejected）
 
