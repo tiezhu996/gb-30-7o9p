@@ -29,8 +29,16 @@ export interface AdoptionApplication {
   org_id: number
   questionnaire: string
   status: string
+  waitlist_rank: number
+  end_reason: string
   created_at: string
   updated_at: string
+  pet_name?: string
+  pet_status?: string
+  waitlist_active?: boolean
+  end_reason_text?: string
+  reserved_user_id?: number
+  reserved_name?: string
 }
 
 export interface VisitReview {

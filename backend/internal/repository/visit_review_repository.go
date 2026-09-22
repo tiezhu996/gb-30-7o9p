@@ -12,10 +12,14 @@ import (
 type VisitReviewRepository struct{ db *gorm.DB }
 
 // NewVisitReviewRepository creates the repository.
-func NewVisitReviewRepository(db *gorm.DB) *VisitReviewRepository { return &VisitReviewRepository{db: db} }
+func NewVisitReviewRepository(db *gorm.DB) *VisitReviewRepository {
+	return &VisitReviewRepository{db: db}
+}
 
 // Create inserts a review.
-func (r *VisitReviewRepository) Create(v *model.VisitReview) error { return translate(r.db.Create(v).Error) }
+func (r *VisitReviewRepository) Create(v *model.VisitReview) error {
+	return translate(r.db.Create(v).Error)
+}
 
 // FindByID locates a review by id.
 func (r *VisitReviewRepository) FindByID(id uint) (*model.VisitReview, error) {
@@ -27,7 +31,9 @@ func (r *VisitReviewRepository) FindByID(id uint) (*model.VisitReview, error) {
 }
 
 // Update persists a review.
-func (r *VisitReviewRepository) Update(v *model.VisitReview) error { return translate(r.db.Save(v).Error) }
+func (r *VisitReviewRepository) Update(v *model.VisitReview) error {
+	return translate(r.db.Save(v).Error)
+}
 
 // ListByUser returns reviews for a user.
 func (r *VisitReviewRepository) ListByUser(userID uint) ([]model.VisitReview, error) {

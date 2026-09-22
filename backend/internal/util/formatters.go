@@ -45,6 +45,14 @@ func AppStatusText(s string) string {
 		return "已通过"
 	case "rejected":
 		return "已拒绝"
+	case "reserved":
+		return "预留中"
+	case "waitlisted":
+		return "候补中"
+	case "cancelled":
+		return "已取消"
+	case "closed":
+		return "已结束"
 	default:
 		return "未知"
 	}
@@ -85,6 +93,8 @@ func PetStatusText(s string) string {
 		return "可领养"
 	case "pending":
 		return "申请中"
+	case "reserved":
+		return "预留中"
 	case "adopted":
 		return "已领养"
 	default:

@@ -10,7 +10,9 @@ func TestFormatMoney(t *testing.T) {
 
 func TestAppStatusText(t *testing.T) {
 	cases := map[string]string{
-		"submitted": "已提交", "approved": "已通过", "rejected": "已拒绝", "x": "未知",
+		"submitted": "已提交", "approved": "已通过", "rejected": "已拒绝",
+		"reserved": "预留中", "waitlisted": "候补中", "cancelled": "已取消",
+		"closed": "已结束", "x": "未知",
 	}
 	for in, want := range cases {
 		if got := AppStatusText(in); got != want {

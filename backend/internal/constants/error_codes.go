@@ -13,11 +13,11 @@ const (
 )
 
 const (
-	MsgInvalidParam   = "invalid request parameter"
-	MsgUnauthorized   = "authentication required"
-	MsgForbidden      = "permission denied"
-	MsgNotFound       = "resource not found"
-	MsgConflict       = "resource conflict"
-	MsgRateLimited    = "too many requests"
-	MsgInternalError  = "internal server error"
+	MsgInvalidParam  = "invalid request parameter"
+	MsgUnauthorized  = "authentication required"
+	MsgForbidden     = "permission denied"
+	MsgNotFound      = "resource not found"
+	MsgConflict      = "resource conflict"
+	MsgRateLimited   = "too many requests"
+	MsgInternalError = "internal server error"
 )

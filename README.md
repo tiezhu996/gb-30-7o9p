@@ -130,10 +130,12 @@ gb-30/
 | GET | /api/v1/pets/:id | 公开 | 宠物详情 |
 | POST | /api/v1/pets | org（限流） | 发布宠物 |
 | PUT | /api/v1/pets/:id/status | org | 宠物状态变更 |
-| POST | /api/v1/applications | 登录（限流） | 提交领养申请（事务：创建申请+宠物置为待领养） |
-| GET | /api/v1/applications/me | 登录 | 我的申请列表 |
-| GET | /api/v1/applications/org | org | 机构收到的申请 |
-| PUT | /api/v1/applications/:id/status | 登录 | 申请状态流转（approved 时事务更新宠物为已领养） |
+| POST | /api/v1/applications | 登录（限流） | 提交领养申请（开放期可多份，部分唯一索引保证一人一份在途申请） |
+| GET | /api/v1/applications/me | 登录 | 我的申请列表（含候补名次/结束原因） |
+| GET | /api/v1/applications/org | org | 机构收到的申请（含预留人/候补名次/结束原因） |
+| POST | /api/v1/applications/:id/select | org | 选中领养人：宠物置预留，其余在途申请按提交时间候补 |
+| POST | /api/v1/applications/:id/release | 登录 | 获选人放弃(abandon)/机构取消预留(cancel)，首位候补原子递补 |
+| PUT | /api/v1/applications/:id/status | 登录 | 申请状态流转（最终拒绝触发递补；approved 时事务：宠物已领养+其余申请结束） |
 | GET | /api/v1/reviews/me | 登录 | 我的回访记录 |
 | GET | /api/v1/reviews/org | org | 机构回访记录 |
 | POST | /api/v1/reviews | org（限流） | 创建回访计划 |

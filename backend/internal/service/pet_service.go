@@ -13,10 +13,10 @@ import (
 
 // PetService handles pet publishing and management.
 type PetService struct {
-	repo         *repository.PetRepository
-	orgRepo      *repository.OrganizationRepository
-	redis        *util.RedisClient
-	logger       *slog.Logger
+	repo    *repository.PetRepository
+	orgRepo *repository.OrganizationRepository
+	redis   *util.RedisClient
+	logger  *slog.Logger
 }
 
 // NewPetService creates a PetService.

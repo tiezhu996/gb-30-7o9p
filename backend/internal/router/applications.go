@@ -14,4 +14,6 @@ func registerApplicationRoutes(v1 *gin.RouterGroup, cfg *config.Config, h *handl
 	apps.GET("/me", h.ListMy)
 	apps.GET("/org", middleware.RequireRole("org"), h.ListOrg)
 	apps.PUT("/:id/status", h.UpdateStatus)
+	apps.POST("/:id/select", middleware.RequireRole("org"), h.SelectAdopter)
+	apps.POST("/:id/release", h.ReleaseReservation)
 }

@@ -13,9 +13,9 @@ import (
 
 // PostService handles community posts and likes.
 type PostService struct {
-	repo   *repository.CommunityPostRepository
+	repo    *repository.CommunityPostRepository
 	orgRepo *repository.OrganizationRepository
-	logger *slog.Logger
+	logger  *slog.Logger
 }
 
 // NewPostService creates a PostService.

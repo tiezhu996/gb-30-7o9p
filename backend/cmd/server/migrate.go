@@ -12,7 +12,7 @@ import (
 )
 
 func migrate(db *gorm.DB) error {
-	return db.AutoMigrate(
+	if err := db.AutoMigrate(
 		&model.User{},
 		&model.Organization{},
 		&model.Pet{},
@@ -23,7 +23,15 @@ func migrate(db *gorm.DB) error {
 		&model.Donation{},
 		&model.DonationUsage{},
 		&model.Favorite{},
-	)
+	); err != nil {
+		return err
+	}
+	// Partial unique index: only one in-progress application per (user, pet).
+	return db.Exec(`
+		CREATE UNIQUE INDEX IF NOT EXISTS uni_active_app_user_pet
+		ON adoption_applications (user_id, pet_id)
+		WHERE status IN ('submitted', 'org_review', 'communicating', 'confirmed',
+		                 'offline_interview', 'reserved', 'waitlisted')`).Error
 }
 
 func seed(db *gorm.DB) error {

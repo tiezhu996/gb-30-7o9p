@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS pets (
   vaccinated BOOLEAN DEFAULT FALSE,
   image_urls JSONB DEFAULT '[]',
   status VARCHAR(16) NOT NULL DEFAULT 'available',
+  reserved_application_id BIGINT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   CONSTRAINT fk_pet_org FOREIGN KEY (org_id) REFERENCES organizations(id)
 );
@@ -57,11 +58,20 @@ CREATE TABLE IF NOT EXISTS adoption_applications (
   org_id BIGINT NOT NULL,
   questionnaire JSONB DEFAULT '{}',
   status VARCHAR(32) NOT NULL DEFAULT 'submitted',
+  waitlist_rank INT NOT NULL DEFAULT 0,
+  end_reason VARCHAR(32),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   CONSTRAINT fk_app_user FOREIGN KEY (user_id) REFERENCES users(id),
   CONSTRAINT fk_app_pet FOREIGN KEY (pet_id) REFERENCES pets(id)
 );
+
+-- One user may only hold a single in-progress application for the same pet;
+-- re-applying is allowed after the previous one ends.
+CREATE UNIQUE INDEX IF NOT EXISTS uni_active_app_user_pet
+  ON adoption_applications (user_id, pet_id)
+  WHERE status IN ('submitted', 'org_review', 'communicating', 'confirmed',
+                   'offline_interview', 'reserved', 'waitlisted');
 
 CREATE TABLE IF NOT EXISTS visit_reviews (
   id BIGSERIAL PRIMARY KEY,

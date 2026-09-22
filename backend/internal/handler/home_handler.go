@@ -15,10 +15,10 @@ import (
 
 // HomeHandler aggregates home page data, cached in Redis.
 type HomeHandler struct {
-	petService *service.PetService
+	petService  *service.PetService
 	postService *service.PostService
-	orgService *service.OrganizationService
-	redis      *util.RedisClient
+	orgService  *service.OrganizationService
+	redis       *util.RedisClient
 }
 
 // NewHomeHandler creates a HomeHandler.

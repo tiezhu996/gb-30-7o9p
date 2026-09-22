@@ -7,6 +7,8 @@ const (
 	MsgPetUpdated         = "动物信息已更新"
 	MsgAppSubmitted       = "领养申请已提交"
 	MsgAppStatusUpdated   = "申请状态已更新"
+	MsgAppSelected        = "已选中领养人，宠物进入预留"
+	MsgAppReleased        = "预留已释放"
 	MsgReviewSubmitted    = "回访已提交"
 	MsgPostPublished      = "帖子发布成功"
 	MsgCommentAdded       = "评论成功"

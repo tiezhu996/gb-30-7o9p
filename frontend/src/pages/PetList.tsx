@@ -38,6 +38,7 @@ export default function PetList() {
           <Radio.Group value={status} onChange={(e) => setStatus(e.target.value)}>
             <Radio.Button value="">全部</Radio.Button>
             <Radio.Button value="available">可领养</Radio.Button>
+            <Radio.Button value="reserved">预留中</Radio.Button>
             <Radio.Button value="adopted">已领养</Radio.Button>
           </Radio.Group>
         </Space>

@@ -33,5 +33,17 @@ func (r *UserRepository) FindByID(id uint) (*model.User, error) {
 	return &u, nil
 }
 
+// ListByIDs returns users matching the given ids.
+func (r *UserRepository) ListByIDs(ids []uint) ([]model.User, error) {
+	var items []model.User
+	if len(ids) == 0 {
+		return items, nil
+	}
+	if err := r.db.Where("id IN ?", ids).Find(&items).Error; err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 // Update persists a user.
 func (r *UserRepository) Update(u *model.User) error { return translate(r.db.Save(u).Error) }

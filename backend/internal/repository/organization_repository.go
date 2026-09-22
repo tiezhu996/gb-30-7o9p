@@ -10,10 +10,14 @@ import (
 type OrganizationRepository struct{ db *gorm.DB }
 
 // NewOrganizationRepository creates an OrganizationRepository.
-func NewOrganizationRepository(db *gorm.DB) *OrganizationRepository { return &OrganizationRepository{db: db} }
+func NewOrganizationRepository(db *gorm.DB) *OrganizationRepository {
+	return &OrganizationRepository{db: db}
+}
 
 // Create inserts an org.
-func (r *OrganizationRepository) Create(o *model.Organization) error { return translate(r.db.Create(o).Error) }
+func (r *OrganizationRepository) Create(o *model.Organization) error {
+	return translate(r.db.Create(o).Error)
+}
 
 // FindByID locates an org by id.
 func (r *OrganizationRepository) FindByID(id uint) (*model.Organization, error) {
@@ -34,7 +38,9 @@ func (r *OrganizationRepository) FindByUserID(userID uint) (*model.Organization,
 }
 
 // Update persists an org.
-func (r *OrganizationRepository) Update(o *model.Organization) error { return translate(r.db.Save(o).Error) }
+func (r *OrganizationRepository) Update(o *model.Organization) error {
+	return translate(r.db.Save(o).Error)
+}
 
 // List filters orgs by status and keyword with pagination.
 func (r *OrganizationRepository) List(status, keyword string, page, pageSize int) ([]model.Organization, int64, error) {

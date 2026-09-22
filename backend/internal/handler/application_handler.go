@@ -80,3 +80,39 @@ func (h *ApplicationHandler) UpdateStatus(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, dto.OK(a))
 }
+
+// SelectAdopter handles POST /applications/:id/select (org picks the holder).
+func (h *ApplicationHandler) SelectAdopter(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.Error(util.NewAppError(http.StatusBadRequest, constants.CodeBadRequest, "invalid application id"))
+		return
+	}
+	a, err := h.svc.SelectAdopter(middleware.GetUserID(c), uint(id))
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, dto.OK(a))
+}
+
+// ReleaseReservation handles POST /applications/:id/release: holder abandons
+// or org cancels; the first waitlisted applicant is promoted.
+func (h *ApplicationHandler) ReleaseReservation(c *gin.Context) {
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.Error(util.NewAppError(http.StatusBadRequest, constants.CodeBadRequest, "invalid application id"))
+		return
+	}
+	var req dto.ApplicationReleaseRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.Error(util.NewAppError(http.StatusBadRequest, constants.CodeBadRequest, constants.MsgInvalidParam))
+		return
+	}
+	a, err := h.svc.ReleaseReservation(middleware.GetUserID(c), uint(id), middleware.GetUserRole(c), req.Action)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	c.JSON(http.StatusOK, dto.OK(a))
+}

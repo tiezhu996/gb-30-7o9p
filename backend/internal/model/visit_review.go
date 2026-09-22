@@ -4,9 +4,9 @@ import "time"
 
 // ReviewStatus values.
 const (
-	ReviewPending  = "pending"
+	ReviewPending   = "pending"
 	ReviewSubmitted = "submitted"
-	ReviewOverdue  = "overdue"
+	ReviewOverdue   = "overdue"
 )
 
 // VisitReview tracks post-adoption follow-up visits.

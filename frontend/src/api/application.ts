@@ -16,3 +16,13 @@ export function listOrgApplications(status?: string) {
 export function updateApplicationStatus(id: number, status: string) {
   return request.put<never, AdoptionApplication>(`/applications/${id}/status`, { status })
 }
+
+// Org selects an application as the reservation holder; others become waitlisted.
+export function selectAdopter(id: number) {
+  return request.post<never, AdoptionApplication>(`/applications/${id}/select`)
+}
+
+// Holder gives up (abandon) or org cancels (cancel) the reservation; rank-1 is promoted.
+export function releaseReservation(id: number, action: 'abandon' | 'cancel') {
+  return request.post<never, AdoptionApplication>(`/applications/${id}/release`, { action })
+}

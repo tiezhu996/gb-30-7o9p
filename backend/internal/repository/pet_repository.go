@@ -25,6 +25,30 @@ func (r *PetRepository) FindByID(id uint) (*model.Pet, error) {
 	return &p, nil
 }
 
+// FindByIDForUpdateTx locates a pet by id inside a transaction and locks the
+// row so only one select/release/release operation proceeds at a time.
+func (r *PetRepository) FindByIDForUpdateTx(tx *gorm.DB, id uint) (*model.Pet, error) {
+	var p model.Pet
+	if err := translate(tx.Clauses(clauseLockingUpdate).First(&p, id).Error); err != nil {
+		return nil, err
+	}
+	return &p, nil
+}
+
+// UpdateStatusIfTx conditionally sets a pet's status/reserved application only
+// while the current status is one of expectFrom. RowsAffected == 0 means a
+// concurrent operation already changed the pet; the caller must fail without
+// overwriting that newer state.
+func (r *PetRepository) UpdateStatusIfTx(tx *gorm.DB, id uint, expectFrom []string, to string, reservedApplicationID uint) (int64, error) {
+	res := tx.Model(&model.Pet{}).
+		Where("id = ? AND status IN ?", id, expectFrom).
+		Updates(map[string]interface{}{
+			"status":                  to,
+			"reserved_application_id": reservedApplicationID,
+		})
+	return res.RowsAffected, translate(res.Error)
+}
+
 // Update persists a pet.
 func (r *PetRepository) Update(p *model.Pet) error { return translate(r.db.Save(p).Error) }
 
@@ -78,6 +102,18 @@ func (r *PetRepository) ListByOrg(orgID uint, status string) ([]model.Pet, error
 		q = q.Where("status = ?", status)
 	}
 	if err := q.Order("id DESC").Find(&items).Error; err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+// ListByIDs returns pets matching the given ids.
+func (r *PetRepository) ListByIDs(ids []uint) ([]model.Pet, error) {
+	var items []model.Pet
+	if len(ids) == 0 {
+		return items, nil
+	}
+	if err := r.db.Where("id IN ?", ids).Find(&items).Error; err != nil {
 		return nil, err
 	}
 	return items, nil
